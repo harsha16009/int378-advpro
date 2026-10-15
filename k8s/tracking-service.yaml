@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracking-service
+  labels:
+    app: tracking-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracking-service
+  template:
+    metadata:
+      labels:
+        app: tracking-service
+    spec:
+      containers:
+      - name: tracking-service
+        image: fruithub-tracking-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3006
+        env:
+        - name: TRACKING_PORT
+          value: "3006"
+        - name: MONGO_TRACKING_URI
+          value: "mongodb://admin:admin123@mongo:27017/tracking-db?authSource=admin"
+        - name: ORDER_SERVICE_URL
+          value: "http://order-service:3003"
+        - name: NOTIFICATION_SERVICE_URL
+          value: "http://notification-service:3005"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3006
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3006
+          initialDelaySeconds: 15
+          periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tracking-service
+  labels:
+    app: tracking-service
+spec:
+  ports:
+  - port: 3006
+    targetPort: 3006
+    name: http
+  selector:
+    app: tracking-service

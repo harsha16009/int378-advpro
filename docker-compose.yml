@@ -1,0 +1,177 @@
+services:
+  # MongoDB
+  mongo:
+    image: mongo:6.0
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - fruits-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Gateway
+  api-gateway:
+    build: ./backend/api-gateway
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      JWT_SECRET: your-secret-key-change-in-production
+      AUTH_SERVICE_URL: http://auth-service:3001
+      PRODUCT_SERVICE_URL: http://product-service:3002
+      ORDER_SERVICE_URL: http://order-service:3003
+      PAYMENT_SERVICE_URL: http://payment-service:3004
+      NOTIFICATION_SERVICE_URL: http://notification-service:3005
+      TRACKING_SERVICE_URL: http://tracking-service:3006
+      CHAT_SERVICE_URL: http://chat-service:3007
+    networks:
+      - fruits-network
+    depends_on:
+      - auth-service
+      - product-service
+      - order-service
+      - payment-service
+      - notification-service
+      - tracking-service
+      - chat-service
+
+  # Auth Service
+  auth-service:
+    build: ./backend/auth-service
+    restart: unless-stopped
+    ports:
+      - "3009:3001"
+    environment:
+      AUTH_PORT: 3001
+      MONGO_AUTH_URI: mongodb://admin:admin123@mongo:27017/auth-db?authSource=admin
+      JWT_SECRET: your-secret-key-change-in-production
+    networks:
+      - fruits-network
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  # Product Service
+  product-service:
+    build: ./backend/product-service
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      PRODUCT_PORT: 3002
+      MONGO_PRODUCT_URI: mongodb://admin:admin123@mongo:27017/product-db?authSource=admin
+    networks:
+      - fruits-network
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  # Order Service
+  order-service:
+    build: ./backend/order-service
+    restart: unless-stopped
+    ports:
+      - "3010:3003"
+    environment:
+      ORDER_PORT: 3003
+      MONGO_ORDER_URI: mongodb://admin:admin123@mongo:27017/order-db?authSource=admin
+      PAYMENT_SERVICE_URL: http://payment-service:3004
+    networks:
+      - fruits-network
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  # Payment Service
+  payment-service:
+    build: ./backend/payment-service
+    restart: unless-stopped
+    ports:
+      - "3011:3004"
+    environment:
+      PAYMENT_PORT: 3004
+      MONGO_PAYMENT_URI: mongodb://admin:admin123@mongo:27017/payment-db?authSource=admin
+      STRIPE_SECRET_KEY: sk_test_your_stripe_key_here
+      ORDER_SERVICE_URL: http://order-service:3003
+    networks:
+      - fruits-network
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  # Notification Service
+  notification-service:
+    build: ./backend/notification-service
+    restart: unless-stopped
+    ports:
+      - "3008:3005"
+    environment:
+      NOTIFICATION_PORT: 3005
+      EMAIL_USER: your-email@gmail.com
+      EMAIL_PASSWORD: your-app-password
+    networks:
+      - fruits-network
+
+  # Tracking Service (Real-Time GPS & WebSockets)
+  tracking-service:
+    build: ./backend/tracking-service
+    restart: unless-stopped
+    ports:
+      - "3006:3006"
+    environment:
+      TRACKING_PORT: 3006
+      MONGO_TRACKING_URI: mongodb://admin:admin123@mongo:27017/tracking-db?authSource=admin
+      ORDER_SERVICE_URL: http://order-service:3003
+      NOTIFICATION_SERVICE_URL: http://notification-service:3005
+    networks:
+      - fruits-network
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  # Chat Service (Real-Time 1-to-1 Chat & Socket.IO)
+  chat-service:
+    build: ./backend/chat-service
+    restart: unless-stopped
+    ports:
+      - "3007:3007"
+    environment:
+      CHAT_PORT: 3007
+      MONGO_CHAT_URI: mongodb://admin:admin123@mongo:27017/chat-db?authSource=admin
+    networks:
+      - fruits-network
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  # Frontend (React + Vite)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://api-gateway:3000
+    networks:
+      - fruits-network
+    depends_on:
+      - api-gateway
+
+volumes:
+  mongo_data:
+
+networks:
+  fruits-network:
+    driver: bridge

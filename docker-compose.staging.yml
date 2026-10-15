@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # MongoDB
+  mongo:
+    image: mongo:6.0
+    container_name: mongo-db-staging
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongo_data_staging:/data/db
+    networks:
+      - fruits-network-staging
+
+  # All microservices will go here (same as main compose but with staging tag)
+  # Keep the same service definitions from docker-compose.yml
+
+volumes:
+  mongo_data_staging:
+
+networks:
+  fruits-network-staging:
+    driver: bridge

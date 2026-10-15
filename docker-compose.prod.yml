@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # MongoDB with backup
+  mongo:
+    image: mongo:6.0
+    container_name: mongo-db-prod
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongo_data_prod:/data/db
+      - ./backups:/backups
+    networks:
+      - fruits-network-prod
+    # Regular backups
+    command: >
+      --auth
+      --replSet=rs0
+
+  # Health check and monitoring (optional)
+  # Add monitoring services like Prometheus, Grafana here
+
+volumes:
+  mongo_data_prod:
+
+networks:
+  fruits-network-prod:
+    driver: bridge

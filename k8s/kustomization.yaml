@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - mongo.yaml
+  - auth-service.yaml
+  - product-service.yaml
+  - order-service.yaml
+  - payment-service.yaml
+  - notification-service.yaml
+  - tracking-service.yaml
+  - chat-service.yaml
+  - api-gateway.yaml
+  - frontend.yaml
+  - monitoring.yaml

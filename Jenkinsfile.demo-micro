@@ -1,0 +1,56 @@
+// Jenkinsfile intended to live in https://github.com/harsha16009/demo-micro (or your fork)
+// so you can use "Pipeline script from SCM" + GitHub webhooks.
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Stop Old Containers') {
+            steps {
+                sh '''
+                    docker compose down || true
+                '''
+            }
+        }
+
+        stage('Build Containers') {
+            steps {
+                sh '''
+                    docker compose build
+                '''
+            }
+        }
+
+        stage('Run Containers') {
+            steps {
+                sh '''
+                    docker compose up -d
+                '''
+            }
+        }
+
+        stage('Check Running Containers') {
+            steps {
+                sh '''
+                    docker ps
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Project Running Successfully!'
+        }
+
+        failure {
+            echo 'Pipeline Failed!'
+        }
+    }
+}

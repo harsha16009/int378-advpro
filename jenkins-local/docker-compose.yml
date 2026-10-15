@@ -1,0 +1,23 @@
+services:
+  jenkins:
+    build:
+      context: .
+      args:
+        # On Linux, set this to: `stat -c %g /var/run/docker.sock`
+        # On Docker Desktop (Windows/macOS), this is usually fine as-is.
+        DOCKER_GID: 999
+    container_name: jenkins-local
+    # Docker Desktop mounts /var/run/docker.sock as root:root (660),
+    # so Jenkins must run as root to access it.
+    user: "0:0"
+    ports:
+      - "8081:8080"
+      - "50001:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      # Allow Jenkins jobs to run `docker ...` against the host Docker daemon:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:

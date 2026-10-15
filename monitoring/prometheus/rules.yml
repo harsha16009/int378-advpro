@@ -1,0 +1,11 @@
+groups:
+  - name: fruits_service_health
+    rules:
+      - record: fruits_service_up
+        expr: probe_success{job="blackbox-http"}
+
+      - record: fruits_service_probe_duration_seconds
+        expr: probe_duration_seconds{job="blackbox-http"}
+
+      - record: fruits_service_last_probe_timestamp_seconds
+        expr: timestamp(probe_success{job="blackbox-http"})
