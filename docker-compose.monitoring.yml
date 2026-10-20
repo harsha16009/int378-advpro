@@ -51,6 +51,6 @@ volumes:
 
 networks:
   fruits-network:
-    name: demo-micro_fruits-network
+    name: fruits_cicd_fruits-network
     external: true
 
