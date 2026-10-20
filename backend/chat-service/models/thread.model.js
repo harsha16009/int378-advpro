@@ -1,26 +1,15 @@
-import mongoose from 'mongoose';
+const mongoose = require("mongoose");
 
 const threadSchema = new mongoose.Schema(
   {
-    threadId: { type: String, required: true, unique: true, index: true },
-    participants: [
-      {
-        id: { type: String, required: true },
-        name: { type: String, required: true },
-        email: String,
-        role: { type: String, default: 'user' }
-      }
-    ],
-    lastMessage: { type: String, default: '' },
+    threadId: { type: String },
+    participants: [{ type: mongoose.Schema.Types.Mixed }],
+    lastMessage: { type: String, default: "" },
     lastMessageTime: { type: Date, default: Date.now },
-    unreadCounts: {
-      type: Map,
-      of: Number,
-      default: {}
-    },
-    orderRef: String
+    unreadCount: { type: Number, default: 0 },
+    orderRef: { type: String, default: null }
   },
   { timestamps: true }
 );
 
-export default mongoose.model('Thread', threadSchema);
+module.exports = mongoose.models.Thread || mongoose.model("Thread", threadSchema);

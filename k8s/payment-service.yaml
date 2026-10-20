@@ -43,6 +43,12 @@ spec:
               value: "sk_test_your_stripe_key_here"
             - name: ORDER_SERVICE_URL
               value: "http://order-service:3003"
+            - name: CF_APP_ID
+              value: "TEST11001095e83764c5151c0a1e3fcc59010011"
+            - name: CF_SECRET_KEY
+              value: "YOUR_CASHFREE_SECRET_KEY"
+            - name: NOTIFICATION_EMAIL
+              value: "allamsetti.harsha2004@gmail.com"
           resources:
             limits:
               cpu: "300m"

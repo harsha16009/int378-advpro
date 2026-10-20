@@ -1,23 +1,22 @@
-import mongoose from 'mongoose';
+const mongoose = require("mongoose");
 
 const chatSchema = new mongoose.Schema(
   {
     sender: {
-      id: { type: String, required: true },
-      name: { type: String, required: true },
-      email: String
+      type: mongoose.Schema.Types.Mixed,
+      required: true
     },
     receiver: {
-      id: { type: String, required: true },
-      name: { type: String, required: true },
-      email: String
+      type: mongoose.Schema.Types.Mixed,
+      required: true
     },
     message: { type: String, required: true },
-    threadId: { type: String, required: true, index: true },
-    isRead: { type: Boolean, default: false },
-    orderRef: String // optional reference to an order ID (e.g. chat with delivery agent)
+    thread: { type: mongoose.Schema.Types.Mixed },
+    threadId: { type: String },
+    orderRef: { type: String, default: null },
+    isRead: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
 
-export default mongoose.model('Chat', chatSchema);
+module.exports = mongoose.models.Chat || mongoose.model("Chat", chatSchema);

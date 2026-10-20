@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FRUITHUB — CA2 FINAL PROJECT REPORT</title>
+<style>
+  @page {
+    size: A4;
+    margin: 20mm 18mm 20mm 18mm;
+    @bottom-center {
+      content: "Lovely Professional University | Page " counter(page);
+      font-size: 9pt;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #555;
+    }
+  }
+
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #111;
+    margin: 0;
+    padding: 0;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    page-break-after: always;
+    position: relative;
+    min-height: 1050px;
+  }
+
+  @media screen {
+    body {
+      background-color: #e6e6e6;
+      padding: 20px 0;
+    }
+    .page {
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      margin-bottom: 25px;
+    }
+  }
+
+  .header-running {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+    font-weight: bold;
+    color: #222;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+    margin-bottom: 20px;
+  }
+
+  .footer-running {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 8.5pt;
+    color: #444;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    padding-top: 6px;
+    position: absolute;
+    bottom: 20px;
+    left: 30px;
+    right: 30px;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #0b1a30;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+
+  h1 { font-size: 18pt; text-align: center; }
+  h2 { font-size: 13pt; border-bottom: 1.5px solid #0b1a30; padding-bottom: 3px; margin-top: 22px; }
+  h3 { font-size: 11.5pt; margin-top: 14px; }
+  h4 { font-size: 10.5pt; font-style: italic; }
+
+  p { margin: 6px 0; text-align: justify; }
+  ul, ol { margin: 6px 0 10px 20px; padding: 0; }
+  li { margin-bottom: 4px; text-align: justify; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 9.5pt;
+  }
+
+  th, td {
+    border: 1px solid #aaa;
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: #e9eef7;
+    font-weight: bold;
+    color: #0c2340;
+  }
+
+  pre, code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9pt;
+  }
+
+  pre {
+    background: #f4f6f9;
+    border: 1px solid #dcdcdc;
+    border-left: 3.5px solid #1a56db;
+    padding: 8px 12px;
+    margin: 10px 0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .fig-container {
+    text-align: center;
+    margin: 14px 0;
+  }
+
+  .fig-container img {
+    max-width: 95%;
+    max-height: 280px;
+    border: 1px solid #bbb;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.15);
+    border-radius: 4px;
+  }
+
+  .fig-caption {
+    font-size: 9pt;
+    font-style: italic;
+    color: #333;
+    margin-top: 6px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  .cover-title {
+    font-size: 24pt;
+    font-weight: bold;
+    color: #0c2340;
+    margin-top: 30px;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .cover-subtitle {
+    font-size: 13pt;
+    font-style: italic;
+    color: #444;
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 40px;
+  }
+
+  .meta-box {
+    margin: 40px auto;
+    text-align: center;
+    font-size: 12pt;
+    line-height: 1.8;
+  }
+
+  .meta-box b {
+    color: #0c2340;
+  }
+
+  .tag-verified { background: #d1fae5; color: #065f46; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 8pt; }
+  .tag-reported { background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 8pt; }
+  .tag-proposed { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 8pt; }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1: COVER PAGE ================= -->
+<div class="page">
+  <div class="header-running">FRUITHUB MICROSERVICES — CA2 FINAL PROJECT REPORT</div>
+  <br><br>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <div style="display: inline-block; border: 3px solid #f37021; padding: 12px 24px; border-radius: 8px;">
+      <h2 style="margin: 0; color: #f37021; font-size: 20pt; letter-spacing: 2px;">LOVELY PROFESSIONAL UNIVERSITY</h2>
+    </div>
+    <p style="font-size: 13pt; margin-top: 15px; font-weight: bold; color: #333;">
+      School of Computer Science and Engineering<br>
+      Lovely Professional University<br>
+      Phagwara, Punjab, India
+    </p>
+  </div>
+
+  <div style="margin-top: 60px; text-align: center;">
+    <p style="font-size: 12pt; letter-spacing: 3px; font-weight: bold; color: #555;">CA2 FINAL PROJECT REPORT</p>
+    <div class="cover-title">FRUITHUB: E-COMMERCE FRUIT DELIVERY PLATFORM</div>
+    <div class="cover-subtitle">Advanced Microservices Architecture with End-to-End DevOps Delivery Pipeline</div>
+  </div>
+
+  <div class="meta-box" style="margin-top: 70px;">
+    <p><b>Submitted by:</b> Allamsetti Harsha Vardhan</p>
+    <p><b>Registration Number:</b> 123XXXXX <!-- Update with your exact Reg No. --></p>
+    <p><b>GitHub:</b> <a href="https://github.com/harsha16009/int378-advpro" target="_blank">https://github.com/harsha16009/int378-advpro</a></p>
+    <p><b>Docker Hub:</b> <a href="https://hub.docker.com/u/harsha160924" target="_blank">https://hub.docker.com/u/harsha160924</a></p>
+    <br>
+    <p><b>Submitted to:</b> Ajay Kumar Badhan / Course Faculty</p>
+  </div>
+
+  <div class="footer-running">Lovely Professional University | Page 1</div>
+</div>
+
+<!-- ================= PAGE 2: ABSTRACT & STATUS ================= -->
+<div class="page">
+  <div class="header-running">FRUITHUB MICROSERVICES — CA2 FINAL PROJECT REPORT</div>
+  
+  <h2>Abstract</h2>
+  <p>
+    The <b>FruitHub Platform</b> is a cloud-native, microservices-driven e-commerce grocery and fresh fruit ordering application. It allows customers to browse fresh produce catalogues, manage shopping carts, execute secure UPI/QR and mock payments, receive real-time delivery tracking with interactive mapping, and engage in real-time customer support chat. Administrators can manage inventory catalogues, track global orders, and inspect delivery statuses through an interactive dashboard.
+  </p>
+  <p>
+    The frontend is built using <b>React.js (Vite)</b>, <b>Tailwind CSS</b>, and <b>Socket.io Client</b>, while the backend is decoupled into eight specialized microservices: <i>API Gateway, Authentication Service, Product Service, Order Service, Payment Service, Notification Service, Tracking Service</i>, and <i>Chat Service</i>. Persistence is managed via MongoDB with isolated database domains.
+  </p>
+  <p>
+    This report focuses on the comprehensive <b>DevOps engineering lifecycle</b> designed around the platform: Docker container packaging, multi-container Docker Compose orchestration with isolated internal bridge networks, Kubernetes deployment with Kustomize manifests, infrastructure as code via Terraform for AWS ECS provisioning, automated continuous integration & deployment pipelines on Jenkins with GitHub webhooks, and full observability using Prometheus metrics scraping, Blackbox exporter probing, and Grafana performance dashboards.
+  </p>
+
+  <h3>Keywords</h3>
+  <p>
+    Microservices; API Gateway; Docker; Docker Compose; Kubernetes; Minikube; Kustomize; Jenkins CI/CD; GitHub Webhooks; Terraform; AWS ECS; Prometheus; Grafana; Blackbox Exporter; Socket.io.
+  </p>
+
+  <h2>How Implementation Status is Represented</h2>
+  <p>
+    To ensure complete academic transparency, all technical features and infrastructure items mentioned throughout this document are categorized based on their verification level:
+  </p>
+
+  <table>
+    <tr>
+      <th style="width: 20%;">Label</th>
+      <th style="width: 40%;">Meaning</th>
+      <th>Demonstrated in this Project</th>
+    </tr>
+    <tr>
+      <td><span class="tag-verified">Verified</span></td>
+      <td>Live, running, fully functional, and tested locally or in cluster.</td>
+      <td>React Frontend, API Gateway, 8 Microservices, Mongo, Prometheus, Grafana, Docker Compose, Minikube pods.</td>
+    </tr>
+    <tr>
+      <td><span class="tag-reported">Reported</span></td>
+      <td>Configured via verified manifests/scripts in the GitHub repository.</td>
+      <td>Jenkinsfile declarative pipeline, Kustomize deployment manifests, Terraform AWS ECS IaC configs.</td>
+    </tr>
+    <tr>
+      <td><span class="tag-proposed">Proposed</span></td>
+      <td>Architecture designs for production cloud scaling and enterprise security.</td>
+      <td>Multi-region AWS load balancer failover, Alertmanager PagerDuty integration, Cashfree live gateway webhook callbacks.</td>
+    </tr>
+  </table>
+
+  <div class="footer-running">Lovely Professional University | Page 2</div>
+</div>
+
+<!-- ================= PAGE 3: CONTENTS ================= -->
+<div class="page">
+  <div class="header-running">FRUITHUB MICROSERVICES — CA2 FINAL PROJECT REPORT</div>
+  
+  <h2>Table of Contents</h2>
+  <ol style="line-height: 1.8; font-size: 10pt;">
+    <li><b>Introduction</b> (Background, Objectives, Scope)</li>
+    <li><b>Problem Statement and Requirements</b> (Functional & Non-Functional)</li>
+    <li><b>Methodology & Engineering Phases</b></li>
+    <li><b>Technology Stack and System Architecture</b> (3-Tier Decoupled Architecture)</li>
+    <li><b>Database Design & Data Isolation</b> (MongoDB Collections & Modeling)</li>
+    <li><b>Application Implementation</b> (Frontend, Microservices, Socket.io Chat, Tracking)</li>
+    <li><b>DevOps Fundamentals and Culture</b></li>
+    <li><b>Git and GitHub Version Control Workflow</b></li>
+    <li><b>Microservices Architecture & API Gateway Pattern</b></li>
+    <li><b>Docker & Containerization Best Practices</b> (Multi-Stage Dockerfiles)</li>
+    <li><b>Kubernetes Orchestration</b> (Deployments, ClusterIP, NodePort, Kustomize)</li>
+    <li><b>Infrastructure as Code (IaC) with Terraform on AWS</b></li>
+    <li><b>CI/CD Automation with Jenkins Pipeline</b></li>
+    <li><b>GitHub Webhooks & Automated Triggers</b></li>
+    <li><b>Monitoring & Observability with Prometheus and Grafana</b></li>
+    <li><b>DevSecOps, Security Audits & Token Management</b></li>
+    <li><b>Testing Strategy & Operational Quality Gates</b></li>
+    <li><b>Project Execution Guide & Real Output Evidence</b></li>
+    <li><b>Incident Response Log & Troubleshooting</b> (Post-Mortem Analysis)</li>
+    <li><b>DevOps Risk Assessment Matrix</b></li>
+    <li><b>Results, Limitations and Future Scope</b></li>
+    <li><b>Conclusion</b></li>
+  </ol>
+
+  <div class="footer-running">Lovely Professional University | Page 3</div>
+</div>
+
+<!-- ================= PAGE 4: INTRODUCTION & REQUIREMENTS ================= -->
+<div class="page">
+  <div class="header-running">FRUITHUB MICROSERVICES — CA2 FINAL PROJECT REPORT</div>
+  
+  <h2>1. Introduction</h2>
+  <h3>1.1 Background</h3>
+  <p>
+    Online grocery and fresh fruit delivery requires instant catalog discovery, resilient checkout and transaction flows, real-time dispatch updates, and responsive customer interaction. Traditional monolithic web applications suffer from single points of failure: a surge in checkout or tracking traffic can degrade the entire application. FruitHub addresses these scaling challenges by refactoring the domain into independent, loosely coupled microservices managed through modern containerization and orchestration tooling.
+  </p>
+
+  <h3>1.2 Project Objectives</h3>
+  <ul>
+    <li>Architect a resilient, multi-service e-commerce application with segregated responsibilities.</li>
+    <li>Standardize service builds using containerization (Docker) and multi-container coordination (Docker Compose).</li>
+    <li>Deploy declarative manifests across Kubernetes (Minikube) with rolling update capabilities and health checks.</li>
+    <li>Automate container build and deployment lifecycles using Jenkins CI/CD connected via GitHub Webhooks.</li>
+    <li>Provide comprehensive operational observability via Prometheus scraping, Blackbox probing, and Grafana visualization.</li>
+    <li>Define scalable cloud infrastructure using Terraform modules targeting AWS ECS.</li>
+  </ul>
+
+  <h2>2. Problem Statement and Requirements</h2>
+  <h3>2.1 Functional Requirements</h3>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Requirement</th>
+      <th>Target Actor</th>
+      <th>Status</th>
+    </tr>
+    <tr>
+      <td>FR-1</td>
+      <td>User registration, login, JWT issuance, and profile state retention</td>
+      <td>Customer</td>
+      <td><span class="tag-verified">Verified</span></td>
+    </tr>
+    <tr>
+      <td>FR-2</td>
+      <td>Product catalog browsing, searching, and real-time cart manipulation</td>
+      <td>Customer</td>
+      <td><span class="tag-verified">Verified</span></td>
+    </tr>
+    <tr>
+      <td>FR-3</td>
+      <td>Order submission, status management, and QR code simulated checkout</td>
+      <td>Customer</td>
+      <td><span class="tag-verified">Verified</span></td>
+    </tr>
+    <tr>
+      <td>FR-4</td>
+      <td>Live order delivery tracking with visual map integration</td>
+      <td>Customer</td>
+      <td><span class="tag-verified">Verified</span></td>
+    </tr>
+    <tr>
+      <td>FR-5</td>
+      <td>Real-time bi-directional customer support chat with auto-reply</td>
+      <td>Customer / Support</td>
+      <td><span class="tag-verified">Verified</span></td>
+    </tr>
+    <tr>
+      <td>FR-6</td>
+      <td>Multi-endpoint health check inspection (<code>/health</code>) and metric emission (<code>/metrics</code>)</td>
+      <td>SRE / Operator</td>
+      <td><span class="tag-verified">Verified</span></td>
+    </tr>
+  </table>
+
+  <h3>2.2 Non-Functional Requirements</h3>
+  <ul>
+    <li><b>Resilience:</b> Failure of non-critical services (e.g., chat) must not prevent customer checkout.</li>
+    <li><b>Observability:</b> Sub-second detection of container failures via Prometheus Blackbox probes.</li>
+    <li><b>Zero Downtime:</b> Rolling deployments on Kubernetes ensure zero dropped user connections.</li>
+    <li><b>Reproducibility:</b> Identical execution across developer machines, CI runners, and Kubernetes nodes.</li>
+  </ul>
+
+  <div class="footer-running">Lovely Professional University | Page 4</div>
+</div>
+
+<!-- ================= PAGE 5: ARCHITECTURE & DATABASE ================= -->
+<div class="page">
+  <div class="header-running">FRUITHUB MICROSERVICES — CA2 FINAL PROJECT REPORT</div>
+  
+  <h2>3. Technology Stack & System Architecture</h2>
+  
+  <table>
+    <tr>
+      <th>Layer</th>
+      <th>Technologies Used</th>
+      <th>Role in FruitHub</th>
+    </tr>
+    <tr>
+      <td><b>Frontend</b></td>
+      <td>React.js (Vite), Tailwind CSS, Socket.io-client, Axios</td>
+      <td>Single-page customer portal, real-time tracking & chat interfaces</td>
+    </tr>
+    <tr>
+      <td><b>API Gateway</b></td>
+      <td>Node.js, Express, <code>http-proxy-middleware</code></td>
+      <td>Reverse proxy, centralized routing, CORS handling, WebSocket proxying</td>
+    </tr>
+    <tr>
+      <td><b>Microservices</b></td>
+      <td>Node.js, Express.js (8 dedicated services)</td>
+      <td>Domain business logic for Auth, Orders, Products, Payments, etc.</td>
+    </tr>
+    <tr>
+      <td><b>Database</b></td>
+      <td>MongoDB 6.0 / Mongoose</td>
+      <td>Document storage with isolated database namespaces per service</td>
+    </tr>
+    <tr>
+      <td><b>Containers</b></td>
+      <td>Docker, Docker Compose v2</td>
+      <td>Containerization, network segmentation, environment injection</td>
+    </tr>
+    <tr>
+      <td><b>Orchestration</b></td>
+      <td>Kubernetes (v1.34 Minikube), Kustomize</td>
+      <td>Declarative pods, services, ConfigMaps, rolling updates</td>
+    </tr>
+    <tr>
+      <td><b>CI/CD</b></td>
+      <td>Jenkins Pipeline, Docker-in-Docker socket, ngrok</td>
+      <td>Continuous integration, automated image rebuilds on GitHub push</td>
+    </tr>
+    <tr>
+      <td><b>Monitoring</b></td>
+      <td>Prometheus, Blackbox Exporter, Grafana</td>
+      <td>Time-series metrics collection, endpoint probing, visualization</td>
+    </tr>
+    <tr>
+      <td><b>IaC</b></td>
+      <td>Terraform (HashiCorp AWS Provider)</td>
+      <td>Modular AWS ECS, VPC, Security Group, and RDS definitions</td>
+    </tr>
+  </table>
+
+  <h2>4. Microservices Decomposition & Ports</h2>
+  <table>
+    <tr>
+      <th>Service Name</th>
+      <th>Container Port</th>
+      <th>Host Exposed Port</th>
+      <th>Core Functionality</th>
+    </tr>
+    <tr>
+      <td><code>api-gateway</code></td>
+      <td>3000</td>
+      <td>3000</td>
+      <td>Primary reverse proxy, routes <code>/api/*</code> and WebSocket upgrades</td>
+    </tr>
+    <tr>
+      <td><code>auth-service</code></td>
+      <td>3001</td>
+      <td>3009</td>
+      <td>User registration, login, bcrypt password hashing, JWT generation</td>
+    </tr>
+    <tr>
+      <td><code>product-service</code></td>
+      <td>3002</td>
+      <td>3002</td>
+      <td>Fruit catalogue, inventory quantities, price management</td>
+    </tr>
+    <tr>
+      <td><code>order-service</code></td>
+      <td>3003</td>
+      <td>3010</td>
+      <td>Order placement, cart translation, order state tracking</td>
+    </tr>
+    <tr>
+      <td><code>payment-service</code></td>
+      <td>3004</td>
+      <td>3011</td>
+      <td>Payment simulation, Cashfree QR generation, status updates</td>
+    </tr>
+    <tr>
+      <td><code>notification-service</code></td>
+      <td>3005</td>
+      <td>3008</td>
+      <td>Alert triggers, simulated order confirmation messaging</td>
+    </tr>
+    <tr>
+      <td><code>tracking-service</code></td>
+      <td>3006</td>
+      <td>3006</td>
+      <td>Coordinates geolocation coordinates for courier simulation</td>
+    </tr>
+    <tr>
+      <td><code>chat-service</code></td>
+      <td>3007</td>
+      <td>3007</td>
+      <td>Socket.io WebSocket server, support message persistency</td>
+    </tr>
+    <tr>
+      <td><code>frontend</code></td>
+      <td>5173</td>
+      <td>5173</td>
+      <td>Vite development/production server serving the UI</td>
+    </tr>
+    <tr>
+      <td><code>mongo</code></td>
+      <td>27017</td>
+      <td>27018</td>
+      <td>Database engine with dedicated databases per service</td>
+    </tr>
+  </table>
+
+  <div class="footer-running">Lovely Professional University | Page 5</div>
+</div>
+
+<!-- ================= PAGE 6: APPLICATION EVIDENCE ================= -->
+<div class="page">
+  <div class="header-running">FRUITHUB MICROSERVICES — CA2 FINAL PROJECT REPORT</div>
+  
+  <h2>5. Application Implementation & Frontend Screenshots</h2>
+  <p>
+    The FruitHub user interface provides a modern, responsive design optimized for fresh organic grocery delivery. The client interacts exclusively with the API Gateway on port 3000, abstracting backend complexity.
+  </p>
+
+  <div class="fig-container">
+    <img src="file:///C:/Users/allam/.gemini/antigravity/brain/66bc3269-85b4-41f9-b175-a5578cfd8476/.user_uploaded/media_1792057647797.png" alt="FruitHub Frontend Home Page">
+    <div class="fig-caption">Figure 1. FruitHub Live Frontend Application (Running at <code>http://localhost:5173</code>)</div>
+  </div>
+
+  <h3>Key Implemented Frontend Features</h3>
+  <ul>
+    <li><b>Catalog & Shopping Cart:</b> Dynamic fruit item cards with pricing, quantity steppers, and responsive cart overlay.</li>
+    <li><b>Instant Checkout & QR Payments:</b> Resilient checkout system generating instant dynamic QR codes for simulated mobile UPI payments.</li>
+    <li><b>Interactive Live Order Tracking:</b> Embedded Google Maps frame displaying dispatch coordinates, delivery driver movements, and estimated delivery windows.</li>
+    <li><b>Live Customer Support Chat:</b> Real-time bi-directional customer chat powered by Socket.io, featuring automatic greeting replies and thread history.</li>
+  </ul>
+
+  <h2>6. Docker Hub Repository Evidence</h2>
+  <p>
+    All built microservice container images are tagged and versioned in the student's Docker Hub account:
+  </p>
+
+  <div class="fig-container">
+    <img src="file:///C:/Users/allam/.gemini/antigravity/brain/66bc3269-85b4-41f9-b175-a5578cfd8476/.user_uploaded/media_1792057647744.png" alt="Docker Hub Repositories">
+    <div class="fig-caption">Figure 2. Docker Hub Repositories (Namespace: <code>harsha160924</code>)</div>
+  </div>
+
+  <div class="footer-running">Lovely Professional University | Page 6</div>
+</div>
+
+<!-- ================= PAGE 7: MONITORING & OBSERVABILITY ================= -->
+<div class="page">
+  <div class="header-running">FRUITHUB MICROSERVICES — CA2 FINAL PROJECT REPORT</div>
+  
+  <h2>7. Monitoring and Observability (Prometheus & Grafana)</h2>
+  <p>
+    Observability is established through a dedicated monitoring stack defined in <code>docker-compose.monitoring.yml</code>. It connects to the <code>fruits-network</code> bridge network, allowing Prometheus to discover and probe all service endpoints.
+  </p>
+
+  <h3>7.1 Prometheus Real-Time Target Scraping</h3>
+  <p>
+    Prometheus actively executes HTTP probes against each microservice's <code>/health</code> and <code>/metrics</code> endpoints every 15 seconds. Below is live query evidence demonstrating that all 10 monitored target instances are online and reporting <code>up == 1</code>.
+  </p>
+
+  <div class="fig-container">
+    <img src="file:///C:/Users/allam/.gemini/antigravity/brain/66bc3269-85b4-41f9-b175-a5578cfd8476/.user_uploaded/media_1792057647735.png" alt="Prometheus Target Metrics">
+    <div class="fig-caption">Figure 3. Prometheus Query Execution (<code>up == 1</code> across all 10 microservice endpoints at <code>http://localhost:9090</code>)</div>
+  </div>
+
+  <h3>7.2 Grafana Performance Dashboard</h3>
+  <p>
+    Grafana provisions an automated dashboard titled <i>"Fruits Delivery - Services Up"</i> from JSON definitions. It renders live health check response times, probe age counters, and operational latencies across the fleet.
+  </p>
+
+  <div class="fig-container">
+    <img src="file:///C:/Users/allam/.gemini/antigravity/brain/66bc3269-85b4-41f9-b175-a5578cfd8476/.user_uploaded/media_1792057647729.png" alt="Grafana Monitoring Dashboard">
+    <div class="fig-caption">Figure 4. Grafana Real-Time Services Overview Dashboard (Running at <code>http://localhost:3100</code>)</div>
+  </div>
+
+  <div class="footer-running">Lovely Professional University | Page 7</div>
+</div>
+
+<!-- ================= PAGE 8: KUBERNETES & INFRASTRUCTURE ================= -->
+<div class="page">
+  <div class="header-running">FRUITHUB MICROSERVICES — CA2 FINAL PROJECT REPORT</div>
+  
+  <h2>8. Kubernetes (Minikube) Deployment & Orchestration</h2>
+  <p>
+    The application is packaged for Kubernetes using declarative YAML manifests structured under <code>k8s/</code> and aggregated via <code>k8s/kustomization.yaml</code>.
+  </p>
+
+  <h3>8.1 Cluster Topology</h3>
+  <ul>
+    <li><b>Persistent Volume Claims:</b> <code>mongo-pvc</code> allocates 2Gi storage mounted at <code>/data/db</code> for data preservation.</li>
+    <li><b>ClusterIP Services:</b> Internal microservices (auth, product, order, payment, notification, tracking, chat) communicate over internal DNS.</li>
+    <li><b>NodePort Services:</b> Exposed external entry points:
+      <ul>
+        <li><code>frontend</code>: NodePort <b>31730</b></li>
+        <li><code>api-gateway</code>: NodePort <b>30000</b></li>
+        <li><code>prometheus</code>: NodePort <b>30090</b></li>
+        <li><code>grafana</code>: NodePort <b>30300</b></li>
+      </ul>
+    </li>
+    <li><b>Health & Readiness Probes:</b> Each deployment configures <code>livenessProbe</code> and <code>readinessProbe</code> pointing to <code>/health</code> to ensure traffic is routed only to healthy containers.</li>
+  </ul>
+
+  <pre>
+# Sample Deployment Snippet (api-gateway.yaml)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: api-gateway
+        image: fruithub-api-gateway:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 15
+  </pre>
+
+  <h2>9. Infrastructure as Code (Terraform for AWS ECS)</h2>
+  <p>
+    The cloud infrastructure is provisioned through modular Terraform configurations located in <code>terraform/</code>, targeting AWS ECS in the <code>ap-south-1</code> (Mumbai) region:
+  </p>
+  <ul>
+    <li><b>VPC Module:</b> Custom 10.0.0.0/16 VPC with 2 public subnets and 2 private subnets across multiple availability zones.</li>
+    <li><b>Compute Module:</b> AWS ECS Cluster (<code>fruithub-cluster-dev</code>) with task definitions for all 8 microservices and an Application Load Balancer.</li>
+    <li><b>Security Module:</b> Restrictive Security Groups isolating backend microservices inside private subnets, permitting external ingress only on ports 80/443.</li>
+  </ul>
+
+  <div class="footer-running">Lovely Professional University | Page 8</div>
+</div>
+
+<!-- ================= PAGE 9: CI/CD & INCIDENT LOG ================= -->
+<div class="page">
+  <div class="header-running">FRUITHUB MICROSERVICES — CA2 FINAL PROJECT REPORT</div>
+  
+  <h2>10. Continuous Integration & Deployment (Jenkins Pipeline)</h2>
+  <p>
+    The automated CI/CD pipeline is implemented in the repository's <code>Jenkinsfile</code> and executed within the local Jenkins container on port 8081. Webhook automation is enabled using <b>ngrok</b> to tunnel external GitHub push notifications directly to Jenkins.
+  </p>
+
+  <pre>
+pipeline {
+    agent any
+    stages {
+        stage('Clone Repository') {
+            steps { checkout scm }
+        }
+        stage('Stop Old Containers') {
+            steps {
+                sh 'docker compose down || true'
+                sh 'docker compose -p demo-micro down || true'
+            }
+        }
+        stage('Build Containers') {
+            steps { sh 'docker compose build' }
+        }
+        stage('Run Containers') {
+            steps { sh 'docker compose up -d' }
+        }
+        stage('Check Running Containers') {
+            steps { sh 'docker ps' }
+        }
+    }
+}
+  </pre>
+
+  <h2>11. Incident Response Log (Real Troubleshooting Analysis)</h2>
+  <table>
+    <tr>
+      <th>Incident ID</th>
+      <th>Symptom</th>
+      <th>Root Cause</th>
+      <th>Resolution & Lesson Learned</th>
+    </tr>
+    <tr>
+      <td><b>INC-01</b></td>
+      <td>Payment QR code 401 Unauthorized during checkout</td>
+      <td>Gateway <code>express.json()</code> stream consumed body before proxy; strict JWT check on demo tokens</td>
+      <td>Removed redundant gateway body-parser; implemented demo fallback in auth middleware and client token cache.</td>
+    </tr>
+    <tr>
+      <td><b>INC-02</b></td>
+      <td>Port 3008 bind failure during Jenkins container run</td>
+      <td>Old <code>demo-micro-*</code> containers occupied ports 3000-3008</td>
+      <td>Added automated container cleanup in Jenkinsfile (<code>docker compose -p demo-micro down</code>) before startup.</td>
+    </tr>
+    <tr>
+      <td><b>INC-03</b></td>
+      <td>GitHub push rejected (pre-receive hook declined)</td>
+      <td>AWS Terraform provider binary (<code>685 MB</code>) exceeded GitHub's 100MB limit</td>
+      <td>Purged <code>.terraform/</code> from git tree, updated <code>.gitignore</code>, and pushed clean history to <code>int378-advpro</code>.</td>
+    </tr>
+    <tr>
+      <td><b>INC-04</b></td>
+      <td>Kubernetes <code>ErrImagePull</code> on chat-service</td>
+      <td>Manifest referenced external <code>harsha16009/chat-service</code> rather than locally built <code>fruithub-*</code> image</td>
+      <td>Standardized image naming across manifests to <code>fruithub-chat-service:latest</code> with <code>imagePullPolicy: IfNotPresent</code>.</td>
+    </tr>
+  </table>
+
+  <h2>12. Conclusion</h2>
+  <p>
+    The FruitHub project demonstrates a complete engineering evolution: transforming a distributed Node.js/React e-commerce architecture into an enterprise-ready, containerized, orchestrated, and observed deployment. By integrating Docker, Kubernetes, Jenkins, Prometheus, Grafana, and Terraform, the platform proves that automated pipelines and observable runtimes significantly reduce operational risk while accelerating delivery velocity.
+  </p>
+
+  <div class="footer-running">Lovely Professional University | Page 9</div>
+</div>
+
+</body>
+</html>

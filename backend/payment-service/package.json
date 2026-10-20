@@ -1,7 +1,7 @@
 {
   "name": "payment-service",
   "version": "1.0.0",
-  "description": "Payment Processing Service for Fruits Delivery",
+  "description": "Payment Processing Service with Cashfree QR, UPI and Email OTP",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -18,7 +18,9 @@
     "stripe": "^12.0.0",
     "dotenv": "^16.0.3",
     "cors": "^2.8.5",
-    "axios": "^1.4.0"
+    "axios": "^1.4.0",
+    "nodemailer": "^6.9.13",
+    "cashfree-pg": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

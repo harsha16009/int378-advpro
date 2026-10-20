@@ -101,6 +101,9 @@ services:
     environment:
       PAYMENT_PORT: 3004
       MONGO_PAYMENT_URI: mongodb://admin:admin123@mongo:27017/payment-db?authSource=admin
+      CF_APP_ID: ${CF_APP_ID:-TEST11001095e83764c5151c0a1e3fcc59010011}
+      CF_SECRET_KEY: ${CF_SECRET_KEY}
+      NOTIFICATION_EMAIL: ${NOTIFICATION_EMAIL:-allamsetti.harsha2004@gmail.com}
       STRIPE_SECRET_KEY: sk_test_your_stripe_key_here
       ORDER_SERVICE_URL: http://order-service:3003
     networks:
@@ -147,6 +150,7 @@ services:
       - "3007:3007"
     environment:
       CHAT_PORT: 3007
+      MONGO_URL: mongodb://admin:admin123@mongo:27017/chat-db?authSource=admin
       MONGO_CHAT_URI: mongodb://admin:admin123@mongo:27017/chat-db?authSource=admin
     networks:
       - fruits-network

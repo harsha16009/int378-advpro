@@ -25,6 +25,10 @@ export default function Payment() {
   const [amount, setAmount] = useState(0);
   const [cashfreeQr, setCashfreeQr] = useState(initialQr);
   const [cashfreeLink, setCashfreeLink] = useState(initialLink);
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [otpEmail, setOtpEmail] = useState('allamsetti.harsha2004@gmail.com');
 
   // Scanner Demo States
   const [showScannerDemo, setShowScannerDemo] = useState(false);
@@ -244,6 +248,61 @@ export default function Payment() {
       value = value.replace(/\D/g, '').substring(0, 3);
     }
     setCardData({ ...cardData, [name]: value });
+  };
+
+  const handleSendOtp = async () => {
+    if (!otpEmail || !otpEmail.includes('@')) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    setSendingOtp(true);
+    try {
+      const res = await paymentAPI.sendCashfreeOtp({
+        orderId,
+        email: otpEmail,
+        amount: amount || 150
+      }, token);
+      setOtpSent(true);
+      toast.success(`OTP sent to ${otpEmail}! Check your inbox 📬`);
+      if (res.data?.demoOtp) {
+        console.log('Demo OTP:', res.data.demoOtp);
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed to send OTP email');
+    } finally {
+      setSendingOtp(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    if (e) e.preventDefault();
+    if (!otp || otp.length < 6) {
+      toast.error('Please enter the 6-digit OTP received on email');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await paymentAPI.verifyCashfreeOtp({
+        orderId,
+        otp,
+        amount: amount || 150,
+        paymentId,
+        email: otpEmail
+      }, token);
+
+      setReceipt(res.data?.payment || {
+        transactionId: res.data?.transactionId || `CF-TX-${Date.now()}`,
+        amount: amount || 150,
+        method: 'cashfree',
+        status: 'COMPLETED'
+      });
+      setSuccess(true);
+      toast.success('OTP Verified! Payment Confirmed 🎉');
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Invalid OTP code');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleProcessPayment = async (e) => {
@@ -713,7 +772,7 @@ export default function Payment() {
                 <div className="space-y-4 text-center">
                   <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-inner">
                     <p className="text-xs uppercase font-bold text-emerald-400 tracking-wider mb-2">Scan with Any UPI App</p>
-                    <p className="text-slate-400 text-xs mb-4">Google Pay, PhonePe, Paytm, BHIM, Cred, or Mobile Banking</p>
+                    <p className="text-slate-400 text-xs mb-3">Google Pay, PhonePe, Paytm, BHIM, Cred, or Mobile Banking</p>
 
                     {/* QR Code Display */}
                     <div className="flex justify-center my-3">
@@ -726,10 +785,65 @@ export default function Payment() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-center space-x-2 text-xs text-slate-400 mt-3">
+                    <div className="flex items-center justify-center space-x-2 text-xs text-slate-400 mt-2">
                       <FiLock className="text-emerald-400" />
                       <span>Cashfree PCI DSS Encrypted Transaction</span>
                     </div>
+                  </div>
+
+                  {/* Email & OTP Section */}
+                  <div className="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4 text-left space-y-3">
+                    <p className="text-xs font-bold text-slate-300 flex items-center justify-between">
+                      <span>📩 Email OTP Verification</span>
+                      <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Secure</span>
+                    </p>
+
+                    <div>
+                      <label className="text-[11px] text-slate-400 block mb-1">Receipt & OTP Email Address</label>
+                      <div className="flex space-x-2">
+                        <input
+                          type="email"
+                          value={otpEmail}
+                          onChange={(e) => setOtpEmail(e.target.value)}
+                          placeholder="your.email@gmail.com"
+                          className="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-emerald-500"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleSendOtp}
+                          disabled={sendingOtp}
+                          className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold rounded-xl border border-slate-700 transition"
+                        >
+                          {sendingOtp ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {otpSent && (
+                      <div className="pt-2 border-t border-slate-800/80 space-y-2">
+                        <label className="text-[11px] text-emerald-400 font-semibold block">
+                          Enter 6-digit OTP sent to your email:
+                        </label>
+                        <div className="flex space-x-2">
+                          <input
+                            type="text"
+                            maxLength={6}
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                            placeholder="123456"
+                            className="flex-1 px-4 py-2.5 bg-slate-900 border border-emerald-500/50 rounded-xl text-white text-center font-mono text-base tracking-widest outline-none focus:border-emerald-400"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleVerifyOtp}
+                            disabled={loading || otp.length < 6}
+                            className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl shadow transition disabled:opacity-50"
+                          >
+                            {loading ? 'Verifying...' : 'Verify & Pay'}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {cashfreeLink && (
@@ -748,7 +862,7 @@ export default function Payment() {
                     disabled={loading}
                     className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold py-3.5 rounded-xl shadow-xl transition duration-200 text-sm flex items-center justify-center space-x-2"
                   >
-                    <span>{loading ? 'Verifying with Cashfree...' : `I have Completed Payment (₹${amount || 150})`}</span>
+                    <span>{loading ? 'Verifying with Cashfree...' : `Instant Confirm (₹${amount || 150})`}</span>
                   </button>
                 </div>
               )}

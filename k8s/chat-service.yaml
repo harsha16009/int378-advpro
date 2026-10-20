@@ -23,6 +23,8 @@ spec:
         env:
         - name: CHAT_PORT
           value: "3007"
+        - name: MONGO_URL
+          value: "mongodb://admin:admin123@mongo:27017/chat-db?authSource=admin"
         - name: MONGO_CHAT_URI
           value: "mongodb://admin:admin123@mongo:27017/chat-db?authSource=admin"
         resources:

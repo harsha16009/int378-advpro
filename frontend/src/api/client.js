@@ -87,6 +87,12 @@ export const paymentAPI = {
   createCashfreeQr: (data, token) => axios.post(`${API_URL}/payments/cashfree/create-qr`, data, {
     headers: { Authorization: `Bearer ${token ?? getAuthToken()}` }
   }),
+  sendCashfreeOtp: (data, token) => axios.post(`${API_URL}/payments/cashfree/send-otp`, data, {
+    headers: { Authorization: `Bearer ${token ?? getAuthToken()}` }
+  }),
+  verifyCashfreeOtp: (data, token) => axios.post(`${API_URL}/payments/cashfree/verify-otp`, data, {
+    headers: { Authorization: `Bearer ${token ?? getAuthToken()}` }
+  }),
   verifyCashfree: (data, token) => axios.post(`${API_URL}/payments/cashfree/verify`, data, {
     headers: { Authorization: `Bearer ${token ?? getAuthToken()}` }
   }),

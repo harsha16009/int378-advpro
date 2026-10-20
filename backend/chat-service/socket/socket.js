@@ -1,125 +1,112 @@
-import { Server } from 'socket.io';
-import Chat from '../models/chat.model.js';
-import Thread from '../models/thread.model.js';
+const { Server } = require("socket.io");
 
 let io;
-const onlineUsers = new Map(); // userId -> socketId
+const onlineUsers = new Map();
 
-export function initSocket(server) {
-  io = new Server(server, {
-    cors: {
-      origin: '*',
-      methods: ['GET', 'POST']
-    }
+function initSocket(server) {
+  io = new Server(server, { 
+    cors: { origin: "*" },
+    transports: ['websocket', 'polling']
   });
 
-  io.on('connection', (socket) => {
-    console.log(`💬 Chat client connected: ${socket.id}`);
+  io.on("connection", (socket) => {
+    console.log(`💬 Socket Connected: ${socket.id}`);
 
-    // User joins chat system
-    socket.on('join', (userId) => {
+    // Join with user ID
+    socket.on("join", (userId) => {
       if (userId) {
         onlineUsers.set(userId.toString(), socket.id);
-        socket.userId = userId.toString();
-        // Broadcast online status to all
-        io.emit('user_status', { userId: userId.toString(), status: 'online' });
-        console.log(`👤 User joined chat: ${userId}`);
+        io.emit("user_status", { userId, status: "online" });
       }
     });
 
-    // Join specific thread room
-    socket.on('join_thread', (threadId) => {
-      socket.join(`thread_${threadId}`);
-      console.log(`💬 Socket ${socket.id} joined room: thread_${threadId}`);
+    // Join specific chat thread room
+    socket.on("join_thread", (threadId) => {
+      if (threadId) {
+        socket.join(`thread_${threadId}`);
+        socket.join(threadId);
+        console.log(`Socket ${socket.id} joined room thread_${threadId}`);
+      }
     });
 
-    // Real-time typing indicators
-    socket.on('typing', ({ threadId, userId, userName }) => {
-      socket.to(`thread_${threadId}`).emit('user_typing', { threadId, userId, userName });
-    });
+    // Send and broadcast chat messages
+    socket.on("send_message", (data) => {
+      const messagePayload = {
+        ...data,
+        _id: data._id || `msg_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+        createdAt: data.createdAt || new Date().toISOString()
+      };
 
-    socket.on('stop_typing', ({ threadId, userId }) => {
-      socket.to(`thread_${threadId}`).emit('user_stop_typing', { threadId, userId });
-    });
+      // Broadcast to room
+      if (data.threadId) {
+        io.to(`thread_${data.threadId}`).emit("receive_message", messagePayload);
+        io.to(data.threadId).emit("receive_message", messagePayload);
+      }
 
-    // Real-time message event via WebSocket
-    socket.on('send_message', async (data) => {
-      try {
-        const { sender, receiver, message, threadId, orderRef } = data;
-        if (!sender || !receiver || !message) return;
-
-        // Generate consistent threadId if not provided
-        const finalThreadId = threadId || [sender.id, receiver.id].sort().join('_');
-
-        // Persist Chat message
-        const chat = await Chat.create({
-          sender,
-          receiver,
-          message,
-          threadId: finalThreadId,
-          orderRef: orderRef || null,
-          isRead: false
-        });
-
-        // Update or create Thread
-        let thread = await Thread.findOne({ threadId: finalThreadId });
-        if (!thread) {
-          thread = await Thread.create({
-            threadId: finalThreadId,
-            participants: [sender, receiver],
-            lastMessage: message,
-            lastMessageTime: new Date(),
-            orderRef: orderRef || null
-          });
-        } else {
-          thread.lastMessage = message;
-          thread.lastMessageTime = new Date();
-          await thread.save();
-        }
-
-        // Emit to the thread room
-        io.to(`thread_${finalThreadId}`).emit('receive_message', chat);
-
-        // Also emit directly to receiver socket if online and not in thread room
-        const receiverSocketId = onlineUsers.get(receiver.id.toString());
-        if (receiverSocketId) {
-          io.to(receiverSocketId).emit('new_message_notification', {
-            chat,
-            threadId: finalThreadId
+      // Direct notification if receiver socket is online
+      const receiverId = data.receiver?.id || data.receiver?._id || data.receiver;
+      if (receiverId) {
+        const receiverSocketId = onlineUsers.get(receiverId.toString());
+        if (receiverSocketId && receiverSocketId !== socket.id) {
+          io.to(receiverSocketId).emit("new_message", messagePayload);
+          io.to(receiverSocketId).emit("new_message_notification", {
+            chat: messagePayload,
+            threadId: data.threadId
           });
         }
-      } catch (err) {
-        console.error('Error handling socket send_message:', err.message);
+      }
+
+      // Automated Support Assistant auto-reply simulation
+      if (receiverId === 'support_agent' || data.receiver?.name?.includes('Support')) {
+        setTimeout(() => {
+          const autoReply = {
+            _id: `reply_${Date.now()}`,
+            sender: { id: 'support_agent', name: 'FruitHub Support Assistant' },
+            receiver: data.sender,
+            message: `Hello ${data.sender?.name || 'Customer'}! We received your message: "${data.message}". Our fruit delivery and support team is on it! 🍏`,
+            threadId: data.threadId,
+            createdAt: new Date().toISOString(),
+            isRead: true
+          };
+
+          if (data.threadId) {
+            io.to(`thread_${data.threadId}`).emit("receive_message", autoReply);
+            io.to(data.threadId).emit("receive_message", autoReply);
+          }
+          socket.emit("receive_message", autoReply);
+        }, 1000);
       }
     });
 
-    // Mark messages as read
-    socket.on('mark_read', async ({ threadId, userId }) => {
-      try {
-        await Chat.updateMany(
-          { threadId, 'receiver.id': userId.toString(), isRead: false },
-          { isRead: true }
-        );
-        socket.to(`thread_${threadId}`).emit('messages_read', { threadId, readerId: userId });
-      } catch (err) {
-        console.error('Error marking messages read:', err.message);
-      }
+    // Typing indicators
+    socket.on("typing", ({ threadId, userId, userName }) => {
+      socket.to(`thread_${threadId}`).emit("user_typing", { threadId, userId, userName });
     });
 
-    socket.on('disconnect', () => {
-      if (socket.userId) {
-        onlineUsers.delete(socket.userId);
-        io.emit('user_status', { userId: socket.userId, status: 'offline', lastSeen: new Date() });
-        console.log(`👤 User left chat: ${socket.userId}`);
+    socket.on("stop_typing", ({ threadId, userId }) => {
+      socket.to(`thread_${threadId}`).emit("user_stop_typing", { threadId, userId });
+    });
+
+    // Disconnect handler
+    socket.on("disconnect", () => {
+      for (const [key, value] of onlineUsers.entries()) {
+        if (value === socket.id) {
+          onlineUsers.delete(key);
+          io.emit("user_status", { userId: key, status: "offline" });
+        }
       }
+      console.log(`Socket Disconnected: ${socket.id}`);
     });
   });
 
   return io;
 }
 
-export function getIO() {
+function getIO() {
   return io;
 }
 
-export { onlineUsers };
+module.exports = initSocket;
+module.exports.initSocket = initSocket;
+module.exports.getIO = getIO;
+module.exports.onlineUsers = onlineUsers;
